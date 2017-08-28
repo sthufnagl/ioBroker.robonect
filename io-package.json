@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "robonect",
-        "version": "0.5.1",
+        "version": "0.5.2",
         "news": {
             "0.5.1": {
                 "en": "beta version",
