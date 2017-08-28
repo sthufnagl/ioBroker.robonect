@@ -100,7 +100,7 @@ function doGET(postData){
 
 function evaluateResponse(data){
   adapter.setState("lastsync", {val: new Date().toISOString(), ack: true});
-
+  adapter.log.info(data);
 
 }
 
@@ -113,7 +113,7 @@ function checkStatus() {
                 if (!error && response.statusCode == 200) {
                     try{
                         data = JSON.parse(body);
-                        evaluateResponse();
+                        evaluateResponse(data);
                     }catch(e){
                         adapter.log.warn(e);
                     }
