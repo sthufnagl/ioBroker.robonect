@@ -85,27 +85,27 @@
           "_id": "mower.connected",
           "type": "state",
           "common": {
-              "name": "Landroid connected",
+              "name": "Mower connected",
               "type": "boolean",
               "role": "indicator.connected",
               "read": true,
               "write": false,
               "def": false,
-              "desc": "Is Landroid mower connected?"
+              "desc": "Is Mower mower connected?"
           },
           "native": {}
       },
       {
-          "_id": "mower.start1",
+          "_id": "mower.start",
           "type": "state",
           "common": {
-              "name": "Start Landroid",
+              "name": "Start Mower",
               "type": "boolean",
               "role": "button",
               "read": true,
               "write": true,
               "def": false,
-              "desc": "Start Landroid"
+              "desc": "Start Mower"
           },
           "native": {}
       },
@@ -113,13 +113,13 @@
           "_id": "mower.stop",
           "type": "state",
           "common": {
-              "name": "Stop Landroid",
+              "name": "Stop Mower",
               "type": "boolean",
               "role": "button",
               "read": true,
               "write": true,
               "def": false,
-              "desc": "Stop Landroid"
+              "desc": "Stop Mower"
           },
           "native": {}
       }

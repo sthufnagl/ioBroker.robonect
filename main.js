@@ -1,32 +1,3 @@
-/**
- *
- * robonect adapter
- *
- *
- *  file io-package.json comments:
- *
- *  {
- *      "common": {
- *          "name":         "robonect",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.0",                    // use "Semantic Versioning"! see http://semver.org/
- *          "title":        "Node.js robonect Adapter",  // Adapter title shown in User Interfaces
- *          "authors":  [                               // Array of authord
- *              "name <mail@robonect.com>"
- *          ]
- *          "desc":         "robonect adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
- *          "platform":     "Javascript/Node.js",       // possible values "javascript", "javascript/Node.js" - more coming
- *          "mode":         "daemon",                   // possible values "daemon", "schedule", "subscribe"
- *          "schedule":     "0 0 * * *"                 // cron-style schedule. Only needed if mode=schedule
- *          "loglevel":     "info"                      // Adapters Log Level
- *      },
- *      "native": {                                     // the native object is available via adapter.config in your adapters code - use it for configuration
- *          "test1": true,
- *          "test2": 42
- *      }
- *  }
- *
- */
-
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
 "use strict";
@@ -34,6 +5,8 @@
 // you have to require the utils module and call adapter function
 var utils   = require(__dirname + '/lib/utils'); // Get common adapter utils
 var request = require('request');
+var ping    = require("ping");
+
 
 var ip      = '192.168.0.109';
 
@@ -126,73 +99,51 @@ function doGET(postData){
 }
 
 function evaluateResponse(data){
+  adapter.setState("lastsync", {val: new Date().toISOString(), ack: true});
 
 
 }
 
+
+function checkStatus() {
+    ping.sys.probe(ip, function (isAlive) {
+        adapter.setState("mower.connected", {val: isAlive, ack: true});
+        if (isAlive) {
+            request(getOptions, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    try{
+                        data = JSON.parse(body);
+                        evaluateResponse();
+                    }catch(e){
+                        adapter.log.warn(e);
+                    }
+                }
+            });
+        }
+    });
+}
 
 function main() {
 
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
     adapter.log.info('config IP Adresse: ' + adapter.config.ip);
-    adapter.log.info('config test1: ' + adapter.config.test2);
 
-    startMower();
+    getOptions = {
+      url: "http://" + adapter.config.ip + ":80/json?cmd=status",
+      type: "GET",
+      headers: {'Accept': 'application/json'}
+    };
 
+    adapter.subscribeStates("mower.start");
+    adapter.subscribeStates("mower.stop");
 
-    /**
-     *
-     *      For every state in the system there has to be also an object of type state
-     *
-     *      Here a simple robonect for a boolean variable named "testVariable"
-     *
-     *      Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-     *
-     */
+  var secs = 10;
+  if (isNaN(secs) || secs < 1) {
+      secs = 10;
+  }
 
-    adapter.setObject('testVariable', {
-        type: 'state',
-        common: {
-            name: 'testVariable',
-            type: 'boolean',
-            role: 'indicator'
-        },
-        native: {}
-    });
-
-    // in this robonect all states changes inside the adapters namespace are subscribed
-    adapter.subscribeStates('*');
-
-
-    /**
-     *   setState examples
-     *
-     *   you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-     *
-     */
-
-    // the variable testVariable is set to true as command (ack=false)
-    adapter.setState('testVariable', true);
-
-    // same thing, but the value is flagged "ack"
-    // ack should be always set to true if the value is received from or acknowledged from the target system
-    adapter.setState('testVariable', {val: true, ack: true});
-
-    // same thing, but the state is deleted after 30s (getState will return null afterwards)
-    adapter.setState('testVariable', {val: true, ack: true, expire: 30});
-
-
-
-    // examples for the checkPassword/checkGroup functions
-    adapter.checkPassword('admin', 'iobroker', function (res) {
-        console.log('check user admin pw ioboker: ' + res);
-    });
-
-    adapter.checkGroup('admin', 'admin', function (res) {
-        console.log('check group user admin group admin: ' + res);
-    });
-
+  setInterval(checkStatus, secs * 1000);
 
 
 }
