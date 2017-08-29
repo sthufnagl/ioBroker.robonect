@@ -6,11 +6,7 @@
 var utils   = require(__dirname + '/lib/utils'); // Get common adapter utils
 var request = require('request');
 var ping    = require("ping");
-
-
-var ip      = '192.168.0.109';
-
-var pin, data, getOptions;
+var ip, pin, data, secs, getOptions;
 
 // you have to call the adapter function and pass a options object
 // name has to be set and has to be equal to adapters folder name and main file name excluding extension
@@ -83,7 +79,7 @@ function stopMower() {
 
 function doGET(postData){
     var options = {
-        url: "http://" + adapter.config.ip + ":80/json?cmd=status",
+        url: "http://" + ip + ":80/json?cmd=status",
         async: true,
         method: 'GET',
         cache: false,
@@ -101,7 +97,33 @@ function doGET(postData){
 function evaluateResponse(data){
   adapter.setState("lastsync", {val: new Date().toISOString(), ack: true});
   adapter.log.info(data);
+  var v_status = data.status.status;
+      if (v_status === 1) adapter.setState('mower.status', {val: 'parkt', ack: true});
+      if (v_status === 2) adapter.setState('mower.status', {val: 'mäht', ack: true});
+      if (v_status === 3) adapter.setState('mower.status', {val: 'sucht die Ladestation', ack: true});
+      if (v_status === 4) adapter.setState('mower.status', {val: 'lädt', ack: true});
+      if (v_status === 5) adapter.setState('mower.status', {val: 'wartet auf Umsetzen im manuellen Modus', ack: true});
+      if (v_status === 7) adapter.setState('mower.status', {val: 'Fehlerstatus', ack: true});
+      if (v_status === 8) adapter.setState('mower.status', {val: 'Schleifensignal verloren', ack: true});
+      if (v_status === 16) adapter.setState('mower.status', {val: 'abgeschaltet', ack: true});
+      if (v_status === 17) adapter.setState('mower.status', {val: 'schläft', ack: true});
+  var v_stopped = data.status.stopped;
+      if (v_stopped === false) adapter.setState('mower.status', {val: 'parkt', ack: true});
+      if (v_stopped === true) adapter.setState('mower.status', {val: 'parkt', ack: true});
+  adapter.setState('javascript.0.Status.Mähroboter.Duration', data.status.duration);
+  var v_mode = data.status.mode;
+      if (v_mode === 0) adapter.setState('mower.status', {val: 'Auto', ack: true});
+      if (v_mode === 1) adapter.setState('mower.status', {val: 'manuell', ack: true});
+      if (v_mode === 2) adapter.setState('mower.status', {val: 'Home', ack: true});
+      if (v_mode === 3) adapter.setState('mower.status', {val: 'Demo', ack: true});
 
+  adapter.setState('mower.status', {val: data.status.battery, ack: true});
+  adapter.setState('mower.status', {val: data.status.hours, ack: true});
+  adapter.setState('mower.status', {val: data.wlan.signal, ack: true});
+  var v_timer_status = data.timer.status;
+      if (v_timer_status === 0) adapter.setState('mower.timer.status', {val: 'Deaktiviert', ack: true});
+      if (v_timer_status === 1) adapter.setState('mower.timer.status', {val: 'Aktiv', ack: true});
+      if (v_timer_status === 2) adapter.setState('mower.timer.status', {val: 'Standby', ack: true});
 }
 
 
@@ -125,23 +147,28 @@ function checkStatus() {
 
 function main() {
 
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // adapter.config:
-    adapter.log.info('config IP Adresse: ' + adapter.config.ip);
+  ip  = adapter.config.ip;
+  pin = adapter.config.pin;
+  secs = adapter.config.poll;
 
-    getOptions = {
-      url: "http://" + adapter.config.ip + ":80/json?cmd=status",
-      type: "GET",
-      headers: {'Accept': 'application/json'}
-    };
 
-    adapter.subscribeStates("mower.start");
-    adapter.subscribeStates("mower.stop");
+  adapter.log.info('config IP Adresse: ' + ip);
+  adapter.log.info('config PIN: ' + pin);
+  adapter.log.info('config Poll: ' + secs);
 
-  var secs = 10;
+  getOptions = {
+    url: "http://" + ip + ":80/json?cmd=status",
+    type: "GET",
+    headers: {'Accept': 'application/json'}
+  };
+
+
   if (isNaN(secs) || secs < 1) {
-      secs = 10;
+    secs = 10;
   }
+
+  adapter.subscribeStates("mower.start");
+  adapter.subscribeStates("mower.stop");
 
   setInterval(checkStatus, secs * 1000);
 

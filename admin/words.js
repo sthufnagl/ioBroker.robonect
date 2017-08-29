@@ -1,10 +1,26 @@
 // Dictionary (systemDictionary is global variable from adapter-settings.js)
 systemDictionary = {
-	"template adapter settings": {"de": "Beispiel", "ru": "Пример"},
-	"ip":                        {"en": "IP", "de": "IP", "ru": "IP"},
-	"test2":                    {"en": "Test 2", "de": "Test 2", "ru": "Тест 2"},
-	"on save adapter restarts with new config immediately": {
-		"de": "Beim Speichern von Einstellungen der Adapter wird sofort neu gestartet.",
-		"ru": "При сохранении настроек адаптера он сразу же перезапускается"
-	}
-};
+        "Robonect adapter settings": {
+            "de": "Robonect  Einstellungen",
+            "ru": "Настройки Robonect "
+        },
+        "IP": {
+            "de": "IP Adresse des Robonect HX Modules",
+            "en": "IP address of the Robonect HX modul",
+            "ru": "IP-адрес газонокосилки Robonect "
+        },
+        "pinCode": {
+            "de": "Vierstellige PIN des Rasenmähers",
+            "en": "Four-digit PIN of lawn mower",
+            "ru": "Четыре-значный PIN-код газонокосилки"
+        },
+        "Intervall": {
+            "de": "Abfrageintervall in Sekunden",
+            "en": "Query interval in seconds",
+            "ru": "Интервал опроса в секундах"
+        },
+        "Settings": {
+            "de": "Einstellungen",
+            "ru": "Настройки"
+        }
+    };

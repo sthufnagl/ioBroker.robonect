@@ -3,7 +3,7 @@
         "name": "robonect",
         "version": "0.5.2",
         "news": {
-            "0.5.1": {
+            "0.5.2": {
                 "en": "beta version",
                 "de": "Betaversion",
                 "ru": "Бета версия",
@@ -42,7 +42,7 @@
     },
     "native": {
         "ip": "192.168.0.109",
-        "test2": 42
+        "poll": 20
     },
     "objects": [],
     "instanceObjects": [
@@ -96,6 +96,19 @@
           "native": {}
       },
       {
+          "_id": "mower.mode",
+          "type": "state",
+          "common": {
+              "name": "Landroid mode",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
           "_id": "mower.start",
           "type": "state",
           "common": {
@@ -110,6 +123,45 @@
           "native": {}
       },
       {
+          "_id": "mower.status",
+          "type": "state",
+          "common": {
+              "name": "Mower status",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower.status.battery",
+          "type": "state",
+          "common": {
+              "name": "Mower status battery",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower.status.hours",
+          "type": "state",
+          "common": {
+              "name": "Mower status hours",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
           "_id": "mower.stop",
           "type": "state",
           "common": {
@@ -120,6 +172,32 @@
               "write": true,
               "def": false,
               "desc": "Stop Mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower.timer.status",
+          "type": "state",
+          "common": {
+              "name": "Mower status timer",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower..wlan.signal",
+          "type": "state",
+          "common": {
+              "name": ".wlan signal",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
           },
           "native": {}
       }

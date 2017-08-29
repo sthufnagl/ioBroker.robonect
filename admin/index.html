@@ -70,16 +70,37 @@
 <!-- you have to put your config page in a div with id adapter-container -->
 <div id="adapter-container">
 
-    <table><tr>
-        <td><img src="robonect.png"/></td>
+  <table>
+    <tr>
         <td><h3 class="translate">robonect adapter settings</h3></td>
-    </tr></table>
-    <p>
-        <span><label for="ip" class="translate">ip</label></span><input class="value" id="ip"/><br>
-        <span><label for="test2" class="translate">test2</label></span><input class="value" id="test2"/><br>
-    </p>
+        <td><img src="robonect.png"/></td>
+    </tr>
+  </table>
 
-    <p class="translate">on save adapter restarts with new config immediately</p>
+  <table>
+     <tr>
+       <td><label class="translate" for="ip">IP</label></td>
+       <td><input class="value" id="ip" placeholder="192.168.x.x" type="text" size="15" maxlength="15"/></td>
+     </tr>
+  </table>
+
+  <table>
+    <tr>
+        <td class="translate"><label class="translate" for="pin">pinCode</label></td>
+        <td><input class="value" id="pin" placeholder="xxxx" type="password" size="6" maxlength="4"/></td>
+    </tr>
+  </table>
+
+  <table>
+     <tr>
+       <td class="translate"><label class="translate" for="poll">Intervall</label></td>
+       <td><input class="value" id="poll" type="text" size="6" maxlength="4"/>
+       </td>
+     </tr>
+  </table>
+
+
+    <p class="translate">on save Robonect adapter restarts with new config immediately</p>
 
 </div>
 
