@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "robonect",
-        "version": "0.5.2",
+        "version": "0.5.4",
         "news": {
-            "0.5.2": {
+            "0.5.4": {
                 "en": "beta version",
                 "de": "Betaversion",
                 "ru": "Бета версия",
@@ -46,6 +46,19 @@
     },
     "objects": [],
     "instanceObjects": [
+      {
+          "_id": "duration",
+          "type": "state",
+          "common": {
+              "name": "Mower duration",
+              "type": "string",
+              "role": "meta.version",
+              "read": true,
+              "write": false,
+              "desc": "Firmware Version"
+          },
+          "native": {}
+      },
       {
           "_id": "firmware",
           "type": "state",
@@ -176,7 +189,7 @@
           "native": {}
       },
       {
-          "_id": "mower.timer.status",
+          "_id": "mower.status.timer",
           "type": "state",
           "common": {
               "name": "Mower status timer",
@@ -189,7 +202,7 @@
           "native": {}
       },
       {
-          "_id": "mower..wlan.signal",
+          "_id": "mower.wlan.signal",
           "type": "state",
           "common": {
               "name": ".wlan signal",

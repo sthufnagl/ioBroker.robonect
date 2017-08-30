@@ -98,32 +98,35 @@ function evaluateResponse(data){
   adapter.setState("lastsync", {val: new Date().toISOString(), ack: true});
   adapter.log.info(data);
   var v_status = data.status.status;
-      if (v_status === 1) adapter.setState('mower.status', {val: 'parkt', ack: true});
-      if (v_status === 2) adapter.setState('mower.status', {val: 'mäht', ack: true});
-      if (v_status === 3) adapter.setState('mower.status', {val: 'sucht die Ladestation', ack: true});
-      if (v_status === 4) adapter.setState('mower.status', {val: 'lädt', ack: true});
-      if (v_status === 5) adapter.setState('mower.status', {val: 'wartet auf Umsetzen im manuellen Modus', ack: true});
-      if (v_status === 7) adapter.setState('mower.status', {val: 'Fehlerstatus', ack: true});
-      if (v_status === 8) adapter.setState('mower.status', {val: 'Schleifensignal verloren', ack: true});
-      if (v_status === 16) adapter.setState('mower.status', {val: 'abgeschaltet', ack: true});
-      if (v_status === 17) adapter.setState('mower.status', {val: 'schläft', ack: true});
-  var v_stopped = data.status.stopped;
-      if (v_stopped === false) adapter.setState('mower.status', {val: 'parkt', ack: true});
-      if (v_stopped === true) adapter.setState('mower.status', {val: 'parkt', ack: true});
-  adapter.setState('javascript.0.Status.Mähroboter.Duration', data.status.duration);
-  var v_mode = data.status.mode;
-      if (v_mode === 0) adapter.setState('mower.status', {val: 'Auto', ack: true});
-      if (v_mode === 1) adapter.setState('mower.status', {val: 'manuell', ack: true});
-      if (v_mode === 2) adapter.setState('mower.status', {val: 'Home', ack: true});
-      if (v_mode === 3) adapter.setState('mower.status', {val: 'Demo', ack: true});
+  if (v_status === 1) adapter.setState('mower.status', {val: 'parkt', ack: true});
+  if (v_status === 2) adapter.setState('mower.status', {val: 'mäht', ack: true});
+  if (v_status === 3) adapter.setState('mower.status', {val: 'sucht die Ladestation', ack: true});
+  if (v_status === 4) adapter.setState('mower.status', {val: 'lädt', ack: true});
+  if (v_status === 5) adapter.setState('mower.status', {val: 'wartet auf Umsetzen im manuellen Modus', ack: true});
+  if (v_status === 7) adapter.setState('mower.status', {val: 'Fehlerstatus', ack: true});
+  if (v_status === 8) adapter.setState('mower.status', {val: 'Schleifensignal verloren', ack: true});
+  if (v_status === 16) adapter.setState('mower.status', {val: 'abgeschaltet', ack: true});
+  if (v_status === 17) adapter.setState('mower.status', {val: 'schläft', ack: true});
 
-  adapter.setState('mower.status', {val: data.status.battery, ack: true});
-  adapter.setState('mower.status', {val: data.status.hours, ack: true});
-  adapter.setState('mower.status', {val: data.wlan.signal, ack: true});
+  var v_stopped = data.status.stopped;
+  if (v_stopped === false) adapter.setState('mower.status', {val: 'parkt', ack: true});
+  if (v_stopped === true) adapter.setState('mower.status', {val: 'fährt', ack: true});
+
+  adapter.setState('duration', data.status.duration);
+  adapter.setState('mower.status.battery', {val: data.status.battery, ack: true});
+  adapter.setState('mower.status.hours', {val: data.status.hours, ack: true});
+  adapter.setState('mower.wlan.signal', {val: data.wlan.signal, ack: true});
+
+  var v_mode = data.status.mode;
+  if (v_mode === 0) adapter.setState('mower.mode', {val: 'Auto', ack: true});
+  if (v_mode === 1) adapter.setState('mower.mode', {val: 'manuell', ack: true});
+  if (v_mode === 2) adapter.setState('mower.mode', {val: 'Home', ack: true});
+  if (v_mode === 3) adapter.setState('mower.mode', {val: 'Demo', ack: true});
+
   var v_timer_status = data.timer.status;
-      if (v_timer_status === 0) adapter.setState('mower.timer.status', {val: 'Deaktiviert', ack: true});
-      if (v_timer_status === 1) adapter.setState('mower.timer.status', {val: 'Aktiv', ack: true});
-      if (v_timer_status === 2) adapter.setState('mower.timer.status', {val: 'Standby', ack: true});
+  if (v_timer_status === 0) adapter.setState('mower.status.timer', {val: 'Deaktiviert', ack: true});
+  if (v_timer_status === 1) adapter.setState('mower.status.timer', {val: 'Aktiv', ack: true});
+  if (v_timer_status === 2) adapter.setState('mower.status.timer', {val: 'Standby', ack: true});
 }
 
 
