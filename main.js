@@ -1,5 +1,6 @@
 /* jshint -W097 */// jshint strict:false
 /*jslint node: true */
+
 "use strict";
 
 // you have to require the utils module and call adapter function
@@ -11,7 +12,21 @@ var ip, pin, data, secs, getOptions;
 // you have to call the adapter function and pass a options object
 // name has to be set and has to be equal to adapters folder name and main file name excluding extension
 // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.robonect.0
+
 var adapter = utils.adapter('robonect');
+
+function startMower() {
+    adapter.log.info("Start Gardena Sileno with the help of Robonect HX");
+    doGET('json?cmd=start');
+    adapter.setState("mower.start", {val: false, ack: true});
+}
+
+function stopMower() {
+    adapter.log.info("Stop Gardena Sileno with the help of Robonect HX");
+    doGET('json?cmd=stop');
+    adapter.setState("mower.stop", {val: false, ack: true});
+}
+
 
 // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {
@@ -65,26 +80,16 @@ adapter.on('ready', function () {
     main();
 });
 
-function startMower() {
-    adapter.log.info("Start Gardena Sileno with the help of Robonect HX");
-    doGET('data=[["settaggi", 11, 1]]');
-    adapter.setState("mower.start", {val: false, ack: true});
-}
 
-function stopMower() {
-    adapter.log.info("Stop Gardena Sileno with the help of Robonect HX");
-    doGET('data=[["settaggi", 12, 1]]');
-    adapter.setState("mower.stop", {val: false, ack: true});
-}
 
-function doGET(postData){
+function doGET(cmd){
     var options = {
-        url: "http://" + ip + ":80/json?cmd=status",
-        async: true,
-        method: 'GET',
-        cache: false,
+        url:      "http://" + ip + ":80/"  + cmd,
+        async:    true,
+        method:   'GET',
+        cache:    false,
         headers: {'Accept': 'application/json'}
-    }
+    };
 
     request(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -94,10 +99,10 @@ function doGET(postData){
     });
 }
 
-function evaluateResponse(data){
+function evaluateResponse(responseData){
   adapter.setState("lastsync", {val: new Date().toISOString(), ack: true});
-  adapter.log.info(data);
-  var v_status = data.status.status;
+  adapter.log.info(responseData);
+  var v_status = responseData.status.status;
   if (v_status === 1) adapter.setState('mower.status', {val: 'parkt', ack: true});
   if (v_status === 2) adapter.setState('mower.status', {val: 'mäht', ack: true});
   if (v_status === 3) adapter.setState('mower.status', {val: 'sucht die Ladestation', ack: true});
@@ -108,22 +113,22 @@ function evaluateResponse(data){
   if (v_status === 16) adapter.setState('mower.status', {val: 'abgeschaltet', ack: true});
   if (v_status === 17) adapter.setState('mower.status', {val: 'schläft', ack: true});
 
-  var v_stopped = data.status.stopped;
-  if (v_stopped === false) adapter.setState('mower.status', {val: 'parkt', ack: true});
-  if (v_stopped === true) adapter.setState('mower.status', {val: 'fährt', ack: true});
+  var v_stopped = responseData.status.stopped;
+  if (v_stopped === false) adapter.setState('mower.status.auftrag2', {val: 'parkt', ack: true});
+  if (v_stopped === true) adapter.setState('mower.status.auftrag2', {val: 'fährt', ack: true});
 
-  adapter.setState('duration', data.status.duration);
-  adapter.setState('mower.status.battery', {val: data.status.battery, ack: true});
-  adapter.setState('mower.status.hours', {val: data.status.hours, ack: true});
-  adapter.setState('mower.wlan.signal', {val: data.wlan.signal, ack: true});
+  adapter.setState('duration', responseData.status.duration);
+  adapter.setState('mower.status.battery', {val: responseData.status.battery, ack: true});
+  adapter.setState('mower.status.hours', {val: responseData.status.hours, ack: true});
+  adapter.setState('mower.wlan.signal', {val: responseData.wlan.signal, ack: true});
 
-  var v_mode = data.status.mode;
+  var v_mode = responseData.status.mode;
   if (v_mode === 0) adapter.setState('mower.mode', {val: 'Auto', ack: true});
   if (v_mode === 1) adapter.setState('mower.mode', {val: 'manuell', ack: true});
   if (v_mode === 2) adapter.setState('mower.mode', {val: 'Home', ack: true});
   if (v_mode === 3) adapter.setState('mower.mode', {val: 'Demo', ack: true});
 
-  var v_timer_status = data.timer.status;
+  var v_timer_status = responseData.timer.status;
   if (v_timer_status === 0) adapter.setState('mower.status.timer', {val: 'Deaktiviert', ack: true});
   if (v_timer_status === 1) adapter.setState('mower.status.timer', {val: 'Aktiv', ack: true});
   if (v_timer_status === 2) adapter.setState('mower.status.timer', {val: 'Standby', ack: true});
@@ -137,8 +142,8 @@ function checkStatus() {
             request(getOptions, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     try{
-                        data = JSON.parse(body);
-                        evaluateResponse(data);
+                        var responseData = JSON.parse(body);
+                        evaluateResponse(responseData);
                     }catch(e){
                         adapter.log.warn(e);
                     }
@@ -160,9 +165,9 @@ function main() {
   adapter.log.info('config Poll: ' + secs);
 
   getOptions = {
-    url: "http://" + ip + ":80/json?cmd=status",
-    type: "GET",
-    headers: {'Accept': 'application/json'}
+    headers:  {'Accept': 'application/json'},
+    type:     "GET",
+    url:      "http://" + ip + ":80/"+ 'json?cmd=status'
   };
 
 

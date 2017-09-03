@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "robonect",
-        "version": "0.5.4",
+        "version": "0.5.5",
         "news": {
-            "0.5.4": {
+            "0.5.5": {
                 "en": "beta version",
                 "de": "Betaversion",
                 "ru": "Бета версия",
@@ -140,6 +140,32 @@
           "type": "state",
           "common": {
               "name": "Mower status",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower.status.auftrag",
+          "type": "state",
+          "common": {
+              "name": "Mower status Auftrag",
+              "type": "string",
+              "role": "text",
+              "read": true,
+              "write": false,
+              "desc": "Current status of lawn mower"
+          },
+          "native": {}
+      },
+      {
+          "_id": "mower.status.auftrag2",
+          "type": "state",
+          "common": {
+              "name": "Mower status Auftrag2",
               "type": "string",
               "role": "text",
               "read": true,
