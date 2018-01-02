@@ -13,7 +13,7 @@ var ip, pin, data, secs, getOptions;
 // name has to be set and has to be equal to adapters folder name and main file name excluding extension
 // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.robonect.0
 
-var adapter = utils.adapter('robonect');
+var adapter = utils.Adapter('robonect');
 
 function startMower() {
     adapter.log.info("Start Gardena Sileno with the help of Robonect HX");
